@@ -1,0 +1,155 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Data Persuratan</title>
+
+<style>
+body{
+font-family:Arial;
+padding:20px;
+background:#f4f4f4;
+}
+
+h1{
+text-align:center;
+margin-bottom:10px;
+}
+
+#search{
+padding:8px;
+width:300px;
+margin-bottom:15px;
+}
+
+table{
+border-collapse:collapse;
+width:100%;
+background:white;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:8px;
+font-size:14px;
+}
+
+th{
+background:#2c7be5;
+color:white;
+}
+
+tr:nth-child(even){
+background:#f2f2f2;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>DATA STATUS PERSURATAN FUAD</h1>
+
+<input type="text" id="search" placeholder="Cari Nama..." onkeyup="cariNama()">
+
+<table id="dataTable">
+<thead>
+<tr>
+<th>ID</th>
+<th>TGL INPUT</th>
+<th>NAMA</th>
+<th>NIM</th>
+<th>PRODI</th>
+<th>PELAYANAN</th>
+<th>EMAIL</th>
+<th>STATUS BERKAS</th>
+<th>KETERANGAN</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+</table>
+
+<script>
+
+let sheetID = "1RLec0Yj2adsvkNKgsdkiZZ2NWzpp80g3H7qDzo4WNTc";
+let sheetName = "EDITING AREA";
+
+let url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
+
+fetch(url)
+.then(res => res.json())
+.then(data => {
+
+let table = document.querySelector("#dataTable tbody");
+
+/* urutkan descending berdasarkan ID */
+
+data.sort((a,b)=> (b.ID ?? 0) - (a.ID ?? 0));
+
+data.forEach(row => {
+
+let id = row.ID ?? "";
+let tgl = row["TGL INPUT"] ?? "";
+let nama = row.NAMA ?? "";
+let nim = row.NIM ?? "";
+let prodi = row.PRODI ?? "";
+let pelayanan = row.PELAYANAN ?? "";
+let email = row.EMAIL ?? "";
+let status = row["STATUS BERKAS"] ?? "";
+let ket = row.KETERANGAN ?? "";
+
+/* jika kosong jangan tampil */
+
+if(nama=="" && nim=="") return;
+
+let tr = document.createElement("tr");
+
+tr.innerHTML = `
+<td>${id}</td>
+<td>${tgl}</td>
+<td>${nama}</td>
+<td>${nim}</td>
+<td>${prodi}</td>
+<td>${pelayanan}</td>
+<td>${email}</td>
+<td>${status}</td>
+<td>${ket}</td>
+`;
+
+table.appendChild(tr);
+
+});
+
+});
+
+/* pencarian nama */
+
+function cariNama(){
+
+let input = document.getElementById("search");
+let filter = input.value.toUpperCase();
+let table = document.getElementById("dataTable");
+let tr = table.getElementsByTagName("tr");
+
+for (let i = 1; i < tr.length; i++) {
+
+let td = tr[i].getElementsByTagName("td")[2];
+
+if (td) {
+
+let txtValue = td.textContent || td.innerText;
+
+tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+
+}
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
+```
